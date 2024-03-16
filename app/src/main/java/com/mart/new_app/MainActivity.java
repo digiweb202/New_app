@@ -1,3 +1,4 @@
+
 package com.mart.new_app;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,8 +39,16 @@ public class MainActivity extends AppCompatActivity {
         urlEditText = findViewById(R.id.urlEditText);
 
         // Load a default URL
-        loadUrl("https://www.google.com");
+//        loadUrl("https://www.google.com");
+        // loading https://www.geeksforgeeks.org url in the WebView.
+        webView.loadUrl("https://www.geeksforgeeks.org");
 
+        // this will enable the javascript.
+        webView.getSettings().setJavaScriptEnabled(true);
+
+        // WebViewClient allows you to handle
+        // onPageFinished and override Url loading.
+        webView.setWebViewClient(new WebViewClient());
         // Set up WebView
         setupWebView();
 
@@ -45,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationControls();
 
         // Set up bookmark button
+        Button showBookmarksButton = findViewById(R.id.bookmarkButton);
+        showBookmarksButton.setOnClickListener(v -> showBookmarks());
+
         setupBookmarkButton();
     }
 
@@ -133,6 +147,20 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Bookmark added", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showBookmarks() {
+        // Retrieve bookmarked URLs from SharedPreferences
+        Map<String, ?> bookmarksMap = bookmarksPreferences.getAll();
+        if (bookmarksMap.isEmpty()) {
+            Toast.makeText(MainActivity.this, "No bookmarks saved", Toast.LENGTH_SHORT).show();
+        } else {
+            StringBuilder bookmarksList = new StringBuilder("Bookmarks:\n");
+            for (Map.Entry<String, ?> entry : bookmarksMap.entrySet()) {
+                bookmarksList.append(entry.getValue()).append("\n");
+            }
+            Toast.makeText(MainActivity.this, bookmarksList.toString(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showLoadingIndicator() {
