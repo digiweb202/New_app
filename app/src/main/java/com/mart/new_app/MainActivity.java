@@ -3,11 +3,13 @@ package com.mart.new_app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -18,6 +20,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.security.PrivateKey;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,12 +30,21 @@ public class MainActivity extends AppCompatActivity {
     private WebView webView;
     private EditText urlEditText;
     private SharedPreferences bookmarksPreferences;
-
+    private Button bookmarklist;
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        bookmarklist = findViewById(R.id.bookmarkButtonlist);
 
+        bookmarklist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,BookmarkListActivity.class);
+                startActivity(intent);
+            }
+        });
         // Initialize SharedPreferences for bookmarks
         bookmarksPreferences = getSharedPreferences("Bookmarks", MODE_PRIVATE);
 
@@ -56,10 +70,11 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationControls();
 
         // Set up bookmark button
-        Button showBookmarksButton = findViewById(R.id.bookmarkButton);
+        FloatingActionButton  showBookmarksButton = findViewById(R.id.bookmarkButton);
         showBookmarksButton.setOnClickListener(v -> showBookmarks());
 
         setupBookmarkButton();
+
     }
 
     private void loadUrl(String url) {
@@ -136,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBookmarkButton() {
-        Button bookmarkButton = findViewById(R.id.bookmarkButton);
+        FloatingActionButton bookmarkButton = findViewById(R.id.bookmarkButton);
         bookmarkButton.setOnClickListener(v -> {
             String currentUrl = webView.getUrl();
             if (currentUrl != null) {

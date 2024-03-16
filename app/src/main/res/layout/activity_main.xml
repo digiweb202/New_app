@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
     <WebView
         android:id="@+id/webView"
         android:layout_width="0dp"
@@ -57,11 +58,22 @@
 
     <!-- Bookmark Button -->
     <Button
-        android:id="@+id/bookmarkButton"
+        android:id="@+id/bookmarkButtonlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Bookmark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Floating Action Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/bookmarkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:src="@drawable/bookmark"
+        app:layout_constraintBottom_toBottomOf="@+id/webView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
