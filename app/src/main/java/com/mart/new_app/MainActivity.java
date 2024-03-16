@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,7 +19,10 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,11 +38,31 @@ public class MainActivity extends AppCompatActivity {
     private EditText urlEditText;
     private SharedPreferences bookmarksPreferences;
     private Button bookmarklist;
+    Switch switchButton;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Assuming you have a Switch with the ID "switch1"
+        switchButton = findViewById(R.id.switch1);
+
+        // Set an OnCheckedChangeListener to monitor the state changes of the Switch
+        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Check if the Switch is checked (enabled) or unchecked (disabled)
+                if (isChecked) {
+                    Toast.makeText(MainActivity.this, "Extenal Web Browser Open Link", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Switch is unchecked (disabled)
+                    Toast.makeText(MainActivity.this,"Internal Web browser Open Link",Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
         bookmarklist = findViewById(R.id.bookmarkButtonlist);
 
         bookmarklist.setOnClickListener(new View.OnClickListener() {
@@ -62,6 +86,13 @@ public class MainActivity extends AppCompatActivity {
 
         // this will enable the javascript.
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setGeolocationEnabled(false);
+        webView.getSettings().setJavaScriptEnabled(false);
+
+//        webView.getSettings().setUserAgentString("Your Custom User Agent String");
+        webView.getSettings().setAllowFileAccess(false);
+
+
 
         // WebViewClient allows you to handle
         // onPageFinished and override Url loading.
@@ -110,8 +141,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+
+
                 // Decide whether to open link internally or externally
-                if (isExternalLink(url)) {
+                if (switchButton.isChecked()) {
                     // If it's an external link, open it in another browser
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(intent);
@@ -133,17 +167,20 @@ public class MainActivity extends AppCompatActivity {
         backButton.setOnClickListener(v -> {
             if (webView.canGoBack()) {
                 webView.goBack();
+                Toast.makeText(this, "Back", Toast.LENGTH_SHORT).show();
             }
         });
 
         forwardButton.setOnClickListener(v -> {
             if (webView.canGoForward()) {
                 webView.goForward();
+                Toast.makeText(this,"Forward",Toast.LENGTH_SHORT).show();
             }
         });
 
         refreshButton.setOnClickListener(v -> {
             webView.reload();
+            Toast.makeText(this, "Refresh page", Toast.LENGTH_SHORT).show();
         });
 
         // Listen for Enter key press on the EditText
@@ -151,14 +188,34 @@ public class MainActivity extends AppCompatActivity {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                     (keyCode == KeyEvent.KEYCODE_ENTER)) {
                 // If Enter key is pressed, load the URL
-                String url = urlEditText.getText().toString();
-                loadUrl(url);
+                String url = urlEditText.getText().toString().trim(); // Trim to remove leading/trailing whitespace
+                if(isValidUrl(url)) {
+
+                    if (switchButton.isChecked()) {
+                        // If it's an external link, open it in another browser
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(intent);
+
+                    }else{
+                        loadUrl(url);
+                    }
+
+                } else {
+                    // URL format is invalid, show error message or handle it accordingly
+                    Toast.makeText(getApplicationContext(), "Invalid URL format", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             }
             return false;
         });
     }
 
+    // Function to check if the URL format is valid
+    private boolean isValidUrl(String url) {
+        // Regular expression to match URL format
+        String urlRegex = "^(https?|ftp)://[a-zA-Z0-9+&@#/%?=~_|!:,.;-]*[-a-zA-Z0-9+&@#/%=~_|]$";
+        return url.matches(urlRegex);
+    }
     private void setupBookmarkButton() {
         FloatingActionButton bookmarkButton = findViewById(R.id.bookmarkButton);
         bookmarkButton.setOnClickListener(v -> {
@@ -210,16 +267,22 @@ public class MainActivity extends AppCompatActivity {
 //        // For example, check if it's a different domain than the current page
 //        return false;
 //    }
-    private boolean isExternalLink(String url) {
-        // Get the domain of the current page
-        String currentDomain = getDomain(webView.getUrl());
-
-        // Get the domain of the clicked link
-        String clickedDomain = getDomain(url);
-
-        // Compare the domains
-        return !currentDomain.equals(clickedDomain);
+private boolean isExternalLink(String url) {
+    // If the switch is enabled, consider all links as external
+    if (switchButton.isChecked()) {
+        return true;
     }
+
+    // Get the domain of the current page
+    String currentDomain = getDomain(webView.getUrl());
+
+    // Get the domain of the clicked link
+    String clickedDomain = getDomain(url);
+
+    // Compare the domains
+    return !currentDomain.equals(clickedDomain);
+}
+
 
     private String getDomain(String url) {
         try {
