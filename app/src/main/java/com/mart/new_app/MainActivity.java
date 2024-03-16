@@ -121,9 +121,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupNavigationControls() {
-        Button backButton = findViewById(R.id.backButton);
-        Button forwardButton = findViewById(R.id.forwardButton);
-        Button refreshButton = findViewById(R.id.refreshButton);
+        FloatingActionButton backButton = findViewById(R.id.backButton);
+        FloatingActionButton forwardButton = findViewById(R.id.forwardButton);
+        FloatingActionButton refreshButton = findViewById(R.id.refreshButton);
 
         backButton.setOnClickListener(v -> {
             if (webView.canGoBack()) {
