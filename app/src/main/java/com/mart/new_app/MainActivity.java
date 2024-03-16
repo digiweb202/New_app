@@ -23,6 +23,8 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.PrivateKey;
 import java.util.Map;
 
@@ -110,10 +112,13 @@ public class MainActivity extends AppCompatActivity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // Decide whether to open link internally or externally
                 if (isExternalLink(url)) {
+                    // If it's an external link, open it in another browser
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(intent);
                     return true;
                 } else {
+                    // Load the link internally in the WebView
+                    view.loadUrl(url);
                     return false; // Load link internally
                 }
             }
@@ -200,9 +205,41 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, "Failed to load the page", Toast.LENGTH_SHORT).show();
     }
 
+//    private boolean isExternalLink(String url) {
+//        // Add logic to determine if the link should be opened externally
+//        // For example, check if it's a different domain than the current page
+//        return false;
+//    }
     private boolean isExternalLink(String url) {
-        // Add logic to determine if the link should be opened externally
-        // For example, check if it's a different domain than the current page
-        return false;
+        // Get the domain of the current page
+        String currentDomain = getDomain(webView.getUrl());
+
+        // Get the domain of the clicked link
+        String clickedDomain = getDomain(url);
+
+        // Compare the domains
+        return !currentDomain.equals(clickedDomain);
     }
+
+    private String getDomain(String url) {
+        try {
+            // Parse the URL
+            URI uri = new URI(url);
+
+            // Get the host (domain) from the URL
+            String domain = uri.getHost();
+
+            // Remove the 'www.' prefix if present
+            if (domain != null && domain.startsWith("www.")) {
+                domain = domain.substring(4);
+            }
+
+            return domain;
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 }
