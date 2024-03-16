@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
         urlEditText = findViewById(R.id.urlEditText);
 
         // Load a default URL
-//        loadUrl("https://www.google.com");
+//        loadUrl("https://www.tutorialspoint.com/index.htm");
         // loading https://www.geeksforgeeks.org url in the WebView.
-        webView.loadUrl("https://www.geeksforgeeks.org");
+        webView.loadUrl("https://www.google.com");
 
         // this will enable the javascript.
         webView.getSettings().setJavaScriptEnabled(true);
@@ -145,6 +145,9 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString(currentUrl, currentUrl);
                 editor.apply();
                 Toast.makeText(MainActivity.this, "Bookmark added", Toast.LENGTH_SHORT).show();
+
+                // Show updated bookmark list
+                showBookmarks();
             }
         });
     }
@@ -157,11 +160,13 @@ public class MainActivity extends AppCompatActivity {
         } else {
             StringBuilder bookmarksList = new StringBuilder("Bookmarks:\n");
             for (Map.Entry<String, ?> entry : bookmarksMap.entrySet()) {
-                bookmarksList.append(entry.getValue()).append("\n");
+                String url = entry.getValue().toString(); // Get the bookmarked URL
+                bookmarksList.append(url).append("\n");
             }
             Toast.makeText(MainActivity.this, bookmarksList.toString(), Toast.LENGTH_LONG).show();
         }
     }
+
 
     private void showLoadingIndicator() {
         // Show loading indicator (e.g., progress bar)
