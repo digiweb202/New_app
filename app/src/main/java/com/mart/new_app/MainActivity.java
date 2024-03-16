@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebResourceError;
@@ -140,8 +141,11 @@ public class MainActivity extends AppCompatActivity {
             webView.reload();
         });
 
-        urlEditText.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_GO) {
+        // Listen for Enter key press on the EditText
+        urlEditText.setOnKeyListener((v, keyCode, event) -> {
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                // If Enter key is pressed, load the URL
                 String url = urlEditText.getText().toString();
                 loadUrl(url);
                 return true;

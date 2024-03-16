@@ -21,7 +21,8 @@
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back"
+        android:drawableTint="@color/white"
+        android:drawableLeft="@drawable/arrow_back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -30,7 +31,10 @@
         android:id="@+id/forwardButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Forward"
+
+        android:drawableLeft="@drawable/arrow_forward"
+        android:drawableTint="@color/white"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/backButton" />
 
@@ -39,7 +43,9 @@
         android:id="@+id/refreshButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Refresh"
+
+        android:drawableLeft="@drawable/refresh"
+        android:drawableTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/forwardButton" />
 
@@ -61,7 +67,7 @@
         android:id="@+id/bookmarkButtonlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bookmark"
+        android:text="Bookmark List"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
